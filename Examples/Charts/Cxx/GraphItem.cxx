@@ -27,7 +27,6 @@
 
 #include "vtkObjectFactory.h"
 
-#include "vtkRegressionTestImage.h"
 
 class GraphAnimate : public vtkCommand
 {
