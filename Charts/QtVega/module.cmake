@@ -1,0 +1,11 @@
+vtk_module(vtkChartsQtVega
+  GROUPS
+    StandAlone
+  DEPENDS
+    vtkCommonDataModel
+    vtkCommonSystem
+    vtkCommonMisc
+    vtkIOCore
+  PRIVATE_DEPENDS
+    vtksys
+  )

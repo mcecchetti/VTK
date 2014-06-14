@@ -40,6 +40,10 @@ IF(NOT("${VTK_QT_VERSION}" STREQUAL ""))
     QT5_USE_MODULES(QScalarsToColors Core Gui Widgets)
     TARGET_LINK_LIBRARIES(QScalarsToColors ${VTK_LIBRARIES})
 
+    ADD_EXECUTABLE(QVegaScene QVegaScene.cxx)
+    QT5_USE_MODULES(QVegaScene Core Gui)
+    TARGET_LINK_LIBRARIES(QVegaScene ${VTK_LIBRARIES})
+
   ELSE()
       FIND_PACKAGE(Qt4 REQUIRED)
       INCLUDE(${QT_USE_FILE})
