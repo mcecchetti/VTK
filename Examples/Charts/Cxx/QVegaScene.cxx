@@ -1,28 +1,78 @@
+/*=========================================================================
 
+  Program:   Visualization Toolkit
+  Module:    $RCSfile$
 
-#include "vtkVegaSpecReader.h"
-#include "vtkSmartPointer.h"
+  Copyright (c) Marco Cecchetti
+  All rights reserved.
+  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
 
-#include <QApplication>
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE. See the above copyright notice for more information.
+
+=========================================================================*/
+
+#include "vtkVegaScene.h"
 
 #include <iostream>
 
+#include <vector>
 
-#define VTK_CREATE(type, name) \
-  vtkSmartPointer<type> name = vtkSmartPointer<type>::New()
+#include <QGuiApplication>
 
 
-
-int main( int argc, char * argv [] )
+void printUsage()
 {
-  // Qt initialization
-  QApplication app(argc, argv);
+    std::cout << "Usage:\n"
+              << "  QVegaScene vega_json_file [output_json_file]\n"
+              << "  If output_json_file is not provided, writes to stdout.\n\n"
+              << "To load data, you may need to set a base directory:\n"
+              << "  For web retrieval, use `-b http://host/data/`. \n"
+              << "  For files, use `-b file:///dir/data/` (absolute) or `-b data/` (relative).\n";
+}
 
-  VTK_CREATE(vtkVegaSpecReader, reader);
+int main(int argc, char *argv[])
+{
+    // for font metrics support
+    QGuiApplication app(argc, argv);
 
-  reader->SetFileName("pippo");
+    String optionBase("-b");
+    String baseURL("");
 
-  reader->PrintSelf(std::cout, vtkIndent(2));
+    std::vector<String> argList;
 
-  return 0;
+    for (int i = 1; i < argc; ++i)
+    {
+        String arg( argv[i] );
+        if( arg == optionBase )
+        {
+            ++i;
+            if (i < argc)
+            {
+                baseURL = String(argv[i]);
+            }
+            else
+            {
+                printUsage();
+                return EXIT_FAILURE;
+            }
+        }
+        else
+        {
+            argList.push_back(arg);
+        }
+    }
+
+    if (argList.size() < 1 || argList.size() > 2)
+    {
+        printUsage();
+        return EXIT_FAILURE;
+    }
+    else if (argList.size() == 1)
+    {
+        argList.push_back(String(""));
+    }
+
+    return vtkVegascene(argList[0], argList[1], baseURL);
 }

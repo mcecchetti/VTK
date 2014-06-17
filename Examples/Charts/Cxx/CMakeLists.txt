@@ -41,7 +41,8 @@ IF(NOT("${VTK_QT_VERSION}" STREQUAL ""))
     TARGET_LINK_LIBRARIES(QScalarsToColors ${VTK_LIBRARIES})
 
     ADD_EXECUTABLE(QVegaScene QVegaScene.cxx)
-    QT5_USE_MODULES(QVegaScene Core Gui)
+    add_definitions(-DDEBUG)
+    QT5_USE_MODULES(QVegaScene Core Gui Concurrent Qml)
     TARGET_LINK_LIBRARIES(QVegaScene ${VTK_LIBRARIES})
 
   ELSE()
