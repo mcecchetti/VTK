@@ -1,26 +1,57 @@
+/*=========================================================================
+
+  Program:   Visualization Toolkit
+  Module:    vtkVegaSpecReader.h
+
+  Copyright (c) Marco Cecchetti
+  All rights reserved.
+  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.  See the above copyright notice for more information.
+
+=========================================================================*/
+// .NAME vtkVegaSpecReader - Read a Vega spec file and generate the related
+// scene graph.
+// .SECTION Description
+// vtkVegaSpecReader is an object that reads from a data source, such as a file
+// or a string, a Vega spec and is able to generate the related Vega internal
+// scene graph in JSON format. It is possible to get the generated scene graph
+// as a string.
 
 #ifndef __vtkVegaSpecReader_h
 #define __vtkVegaSpecReader_h
 
 #include "vtkChartsQtVegaModule.h" // For export macro
-#include "vtkAlgorithm.h"
+#include "vtkObject.h"
+#include "vtkSmartPointer.h"
 #include "vtkStdString.h"
 
-#define VTK_ASCII 1
+
+
 
 class vtkCharArray;
+class vtkVegaScene;
 
-class VTKCHARTSQTVEGA_EXPORT vtkVegaSpecReader  : public vtkAlgorithm
+class VTKCHARTSQTVEGA_EXPORT vtkVegaSpecReader  : public vtkObject
 {
 public:
   static vtkVegaSpecReader *New();
-  vtkTypeMacro(vtkVegaSpecReader, vtkAlgorithm);
+  vtkTypeMacro(vtkVegaSpecReader, vtkObject);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   // Description:
   // Specify file name of vtk data file to read.
   vtkSetStringMacro(FileName);
   vtkGetStringMacro(FileName);
+
+  // Description:
+  // Specify the url utilized as base path for finding data resources,
+  // referenced by the Vega spec file.
+  vtkSetStringMacro(BaseURL);
+  vtkGetStringMacro(BaseURL);
+
 
   // Description:
   // Specify the InputString for use when reading from a character array.
@@ -44,6 +75,7 @@ public:
   virtual void SetInputArray(vtkCharArray*);
   vtkGetObjectMacro(InputArray, vtkCharArray);
 
+
   // Description:
   // Enable reading from an InputString or InputArray instead of the default,
   // a file.
@@ -51,26 +83,42 @@ public:
   vtkGetMacro(ReadFromInputString,int);
   vtkBooleanMacro(ReadFromInputString,int);
 
+  // Description:
+  // Open a Vega spec data stream. Returns zero if error.
+  int OpenSpecFile();
+
+  // Description:
+  // Close the Vega spec data stream.
+  void CloseSpecFile();
+
+  // Description:
+  // In case a Vega spec file or string is available and generate the related
+  // scene graph.
+  virtual void Update();
+
+  // Description:
+  // Return the scene graph, related to the last rendering, in JSON format
+  // as a string. If Update has never been invoked return a null string.
+  std::string GetSceneString() const;
+
+
 protected:
   vtkVegaSpecReader();
   ~vtkVegaSpecReader();
 
+
   char *FileName;
+  istream *IS;
+  char *BaseURL;
   int ReadFromInputString;
   char *InputString;
   int InputStringLength;
-  vtkCharArray* InputArray;
-
-
-  virtual int ProcessRequest(vtkInformation *, vtkInformationVector **,
-                             vtkInformationVector *)
-  { return 1; }
-
+  vtkCharArray *InputArray;
+  vtkSmartPointer<vtkVegaScene> VegaScene;
 
 private:
   vtkVegaSpecReader(const vtkVegaSpecReader&);  // Not implemented.
   void operator=(const vtkVegaSpecReader&);  // Not implemented.
 };
-
 
 #endif

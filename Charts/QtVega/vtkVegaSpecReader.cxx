@@ -1,8 +1,27 @@
+/*=========================================================================
+
+  Program:   Visualization Toolkit
+  Module:    vtkVegaSpecReader.cxx
+
+  Copyright (c) Marco Cecchetti
+  All rights reserved.
+  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.  See the above copyright notice for more information.
+
+=========================================================================*/
 
 #include "vtkVegaSpecReader.h"
 
 #include "vtkCharArray.h"
 #include "vtkObjectFactory.h"
+#include "vtkVegaScene.h"
+#include <vtksys/ios/sstream>
+
+#include <ctype.h>
+#include <sys/stat.h>
 
 
 
@@ -47,6 +66,8 @@ void vtkVegaSpecReader::PrintSelf(ostream& os, vtkIndent indent)
 vtkVegaSpecReader::vtkVegaSpecReader()
 {
   this->FileName = NULL;
+  this->IS = NULL;
+  this->BaseURL = NULL;
   this->InputString = NULL;
   this->InputStringLength = 0;
   this->ReadFromInputString = 0;
@@ -66,6 +87,10 @@ vtkVegaSpecReader::~vtkVegaSpecReader()
     delete [] this->InputString;
     }
   this->SetInputArray(0);
+  if ( this->IS )
+    {
+    delete this->IS;
+    }
 }
 
 
@@ -121,4 +146,130 @@ void vtkVegaSpecReader::SetInputString(const char *in, int len)
 }
 
 
+//------------------------------------------------------------------------------
+int vtkVegaSpecReader::OpenSpecFile()
+{
+  if ( this->IS != NULL )
+    {
+    this->CloseSpecFile ();
+    }
+  if (this->ReadFromInputString)
+    {
+    if (this->InputArray)
+      {
+      vtkDebugMacro(<< "Reading from InputArray");
+      std::string str(this->InputArray->GetPointer(0),
+        static_cast<size_t>( this->InputArray->GetNumberOfTuples()  *
+                             this->InputArray->GetNumberOfComponents()) );
+      this->IS = new vtksys_ios::istringstream(str);
+      return 1;
+      }
+    else if (this->InputString)
+      {
+      vtkDebugMacro(<< "Reading from InputString");
+      std::string str(this->InputString, this->InputStringLength);
+      this->IS = new vtksys_ios::istringstream(str);
+      return 1;
+      }
+    }
+  else
+    {
+    vtkDebugMacro(<< "Opening Vega spec file");
 
+    if ( !this->FileName || (strlen(this->FileName) == 0))
+      {
+      vtkErrorMacro(<< "No file specified!");
+      return 0;
+      }
+
+    // first make sure the file exists, this prevents an empty file from
+    // being created on older compilers
+    struct stat fs;
+    if (stat(this->FileName, &fs) != 0)
+      {
+      vtkErrorMacro(<< "Unable to open file: "<< this->FileName);
+      return 0;
+      }
+    this->IS = new ifstream(this->FileName, ios::in);
+    if (this->IS->fail())
+      {
+      vtkErrorMacro(<< "Unable to open file: "<< this->FileName);
+      delete this->IS;
+      this->IS = NULL;
+      return 0;
+      }
+    return 1;
+    }
+
+  return 0;
+}
+
+
+//------------------------------------------------------------------------------
+void vtkVegaSpecReader::CloseSpecFile()
+{
+  vtkDebugMacro(<<"Closing Vega spec file");
+  if ( this->IS != NULL )
+    {
+    delete this->IS;
+    }
+  this->IS = NULL;
+}
+
+
+//------------------------------------------------------------------------------
+void vtkVegaSpecReader::Update()
+{
+  if (!this->OpenSpecFile())
+    {
+    this->CloseSpecFile();
+    return;
+    }
+
+  if (this->VegaScene.GetPointer() == NULL)
+    {
+    vtkDebugMacro(<< "Creating VegaScene instance");
+    this->VegaScene = vtkSmartPointer<vtkVegaScene>::New();
+    if (this->VegaScene.GetPointer() == NULL)
+      {
+      vtkErrorMacro(<< "Unable to create VegaScene instance");
+      return;
+      }
+    }
+
+  this->VegaScene->SetBaseURL(this->GetBaseURL());
+  vtkDebugMacro(<< "Base URL: " << this->VegaScene->GetBaseURL() << "\n");
+
+  if (this->GetReadFromInputString())
+    {
+    vtksys_ios::istringstream* iss = dynamic_cast<vtksys_ios::istringstream*>(this->IS);
+    if (iss == NULL)
+      {
+      vtkErrorMacro(<< "Unable to read from input string");
+      this->CloseSpecFile();
+      return;
+      }
+    this->VegaScene->LoadSpec(iss->str());
+    }
+  else
+    {
+    this->VegaScene->LoadSpecFromFile(this->GetFileName());
+    }
+  this->CloseSpecFile ();
+
+  this->VegaScene->Render();
+}
+
+
+//------------------------------------------------------------------------------
+std::string vtkVegaSpecReader::GetSceneString() const
+{
+  if (this->VegaScene != NULL)
+    {
+    return this->VegaScene->GetResult();
+    }
+  else
+    {
+    return std::string();
+    }
+}

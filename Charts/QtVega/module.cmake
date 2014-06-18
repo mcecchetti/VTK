@@ -1,10 +1,11 @@
 vtk_module(vtkChartsQtVega
   GROUPS
-    StandAlone
+    Qt
   DEPENDS
-    vtkCommonDataModel
+    vtkChartsVegascene
     vtkCommonSystem
     vtkCommonMisc
+    vtkCommonCore
     vtkIOCore
   PRIVATE_DEPENDS
     vtksys

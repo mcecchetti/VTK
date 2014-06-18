@@ -45,6 +45,10 @@ IF(NOT("${VTK_QT_VERSION}" STREQUAL ""))
     QT5_USE_MODULES(QVegaScene Core Gui Concurrent Qml)
     TARGET_LINK_LIBRARIES(QVegaScene ${VTK_LIBRARIES})
 
+    ADD_EXECUTABLE(SceneString SceneString.cxx)
+    QT5_USE_MODULES(SceneString Core Gui Concurrent Qml)
+    TARGET_LINK_LIBRARIES(SceneString ${VTK_LIBRARIES})
+
   ELSE()
       FIND_PACKAGE(Qt4 REQUIRED)
       INCLUDE(${QT_USE_FILE})
