@@ -68,3 +68,56 @@ set(${vtk-module}_NO_HeaderTest 1)
 vtk_module_library(${vtk-module} ${LibSrcs} ${LibMocSrcs} ${NonMocHeaders} ${MocHeaders})
 
 target_link_libraries(${vtk-module} LINK_PRIVATE ${QT_LIBRARIES})
+
+
+# Copy JavaScript files if necessary.
+if(NOT "${VTK_BINARY_DIR}" MATCHES "^${VTK_SOURCE_DIR}$")
+# Make the necessary directories.
+  file(MAKE_DIRECTORY
+    ${CMAKE_CURRENT_BINARY_DIR}/jslib
+    ${CMAKE_CURRENT_BINARY_DIR}/jsmodules)
+
+  unset(VEGA_JS_FILES)
+
+# JavaScript source files.
+  list(APPEND VEGA_JS_FILES
+    jslib/console
+    jslib/d3.geo.projection.min
+    jslib/setTimeout
+    jslib/vega.data.load
+    jslib/vega.postload.config
+    jslib/vega.preload.config
+    jslib/vegascene.canvas
+    jslib/vegascene.render
+    jslib/vegascene.run
+    )
+
+# JavaScript modules.
+  list(APPEND VEGA_JS_FILES
+    jsmodules/d3
+    jsmodules/topojson
+    jsmodules/vega
+    )
+
+# Now copy these files.
+  unset(VEGA_JS_SOURCE_FILES)
+  foreach(file ${VEGA_JS_FILES})
+    set(src "${CMAKE_CURRENT_BINARY_DIR}/${file}.js")
+    set(VEGA_JS_SOURCE_FILES ${VEGA_JS_SOURCE_FILES} ${src})
+  endforeach()
+
+  foreach(file ${VEGA_JS_FILES})
+    set(src "${CMAKE_CURRENT_SOURCE_DIR}/${file}.js")
+    set(tgt "${CMAKE_CURRENT_BINARY_DIR}/${file}.js")
+    add_custom_command(
+      DEPENDS ${src}
+      OUTPUT ${tgt}
+      COMMAND ${CMAKE_COMMAND} -E copy ${src} ${tgt}
+      COMMENT "source copy")
+  endforeach()
+
+  add_custom_target(vtkvega_js_source_copy ALL echo "..."
+      DEPENDS ${VEGA_JS_SOURCE_FILES})
+
+  add_dependencies(${vtk-module} vtkvega_js_source_copy)
+endif()

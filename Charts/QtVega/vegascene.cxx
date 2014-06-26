@@ -36,13 +36,14 @@ PURPOSE. See the above copyright notice for more information.
 
 
 //------------------------------------------------------------------------------
-#define JSMODULE_BASE_PATH "../jsmodules/"
+#define VEGA_JS_SOURCE_BASE_PATH "../Charts/QtVega/"
+#define JSMODULE_BASE_PATH VEGA_JS_SOURCE_BASE_PATH "jsmodules/"
 #define JSMODULE_PATH(NAME) \
      JSMODULE_BASE_PATH #NAME ".js"
 
 
 //------------------------------------------------------------------------------
-#define JSLIB_BASE_PATH "../jslib/"
+#define JSLIB_BASE_PATH VEGA_JS_SOURCE_BASE_PATH "jslib/"
 #define JSLIB_PATH(NAME) \
      JSLIB_BASE_PATH #NAME
 
