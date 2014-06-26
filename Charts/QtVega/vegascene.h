@@ -23,7 +23,7 @@ PURPOSE. See the above copyright notice for more information.
 #ifndef VEGASCENE_H
 #define VEGASCENE_H
 
-#include "vtkChartsVegasceneModule.h"  // For export macro
+#include "vtkChartsQtVegaModule.h"  // For export macro
 #include "jscallbackmanager.h"
 #include "jscontext2d.h"
 #include "data.h"
@@ -54,44 +54,44 @@ public:
     // Description:
     // Load the Vega spec from a string into the JavaScript engine.
     // Return true if the operation is successfully, else return false.
-    VTKCHARTSVEGASCENE_EXPORT
+    VTKCHARTSQTVEGA_EXPORT
     bool LoadSpec(const String& spec);
 
     // Description:
     // Load the Vega spec from a file into the JavaScript engine.
     // Return true if the operation is successfully, else return false.
-    VTKCHARTSVEGASCENE_EXPORT
+    VTKCHARTSQTVEGA_EXPORT
     bool LoadSpecFromFile(const String& filePath);
 
     // Description:
     // Return the url utilized as base path for finding data resources,
     // referenced by the Vega spec file.
-    VTKCHARTSVEGASCENE_EXPORT
+    VTKCHARTSQTVEGA_EXPORT
     const String& GetBaseURL() const;
 
     // Description:
     // Specify the url utilized as base path for finding data resources,
     // referenced by the Vega spec file.
-    VTKCHARTSVEGASCENE_EXPORT
+    VTKCHARTSQTVEGA_EXPORT
     void SetBaseURL(const String& baseURL);
 
     // Description:
     // Generate the scene graph related to the currently loaded Vega spec file.
     // Return true if the operation is successfully, else return false.
-    VTKCHARTSVEGASCENE_EXPORT
+    VTKCHARTSQTVEGA_EXPORT
     bool Render();
 
     // Description:
     // Return the scene graph, related to the last rendering, in JSON format
     // as a string.
-    VTKCHARTSVEGASCENE_EXPORT
+    VTKCHARTSQTVEGA_EXPORT
     const String& GetResult();
 
     // Description:
     // Write the scene graph, related to the last rendering, in JSON format
     // to a file. If the passed file path is empty the scene graph is sent to
     // the standard output.
-    VTKCHARTSVEGASCENE_EXPORT
+    VTKCHARTSQTVEGA_EXPORT
     bool Write(const String& filePath = String());
 
 private:

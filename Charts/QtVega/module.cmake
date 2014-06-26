@@ -2,11 +2,8 @@ vtk_module(vtkChartsQtVega
   GROUPS
     Qt
   DEPENDS
-    vtkChartsVegascene
-    vtkCommonSystem
-    vtkCommonMisc
     vtkCommonCore
-    vtkIOCore
   PRIVATE_DEPENDS
     vtksys
+  EXCLUDE_FROM_WRAPPING
   )

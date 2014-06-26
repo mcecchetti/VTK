@@ -23,7 +23,7 @@
 #define __vtkVegaScene_h
 
 
-#include "vtkChartsVegasceneModule.h"  // For export macro
+#include "vtkChartsQtVegaModule.h"  // For export macro
 #include "vtkObject.h"
 
 #include "vegascene.h"
@@ -31,7 +31,7 @@
 
 
 
-class VTKCHARTSVEGASCENE_EXPORT vtkVegaScene : public VegaScene, public vtkObject
+class VTKCHARTSQTVEGA_EXPORT vtkVegaScene : public VegaScene, public vtkObject
 {
 public:
   static vtkVegaScene *New();
@@ -54,7 +54,7 @@ private:
 // The output content will be in JSON format. An URL used as base path for
 // finding data resources referenced in the spec file, can be passed as third
 // argument.
-VTKCHARTSVEGASCENE_EXPORT
+VTKCHARTSQTVEGA_EXPORT
 int vtkVegascene(const String& specFilePath,
                  const String& outFilePath = String(""),
                  const String& baseURL = String(""));
