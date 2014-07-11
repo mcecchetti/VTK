@@ -1,0 +1,49 @@
+/*=========================================================================
+
+  Program:   Visualization Toolkit
+  Module:    vtkVegaAreaItem.h
+
+  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+  All rights reserved.
+  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.  See the above copyright notice for more information.
+
+=========================================================================*/
+// .NAME vtkVegaAreaItem -
+//
+// .SECTION Description
+// vtkVegaAreaItem
+
+#ifndef __vtkVegaAreaItem_h
+#define __vtkVegaAreaItem_h
+
+#include "vtkChartsVegaRendererModule.h" // For export macro
+#include "vtkVegaMarkItem.h"
+
+
+class VTKCHARTSVEGARENDERER_EXPORT vtkVegaAreaItem : public vtkVegaMarkItem
+{
+public:
+  static const int Type = vtkVegaMarkItem::AREA;
+
+public:
+  static vtkVegaAreaItem *New();
+  vtkTypeMacro(vtkVegaAreaItem, vtkVegaMarkItem);
+  virtual void PrintSelf(ostream& os, vtkIndent indent);
+
+  virtual bool Paint(vtkContext2D *painter);
+
+protected:
+  vtkVegaAreaItem();
+  ~vtkVegaAreaItem();
+
+
+private:
+  vtkVegaAreaItem(const vtkVegaAreaItem& );  // Not implemented.
+  void operator=(const vtkVegaAreaItem& );  // Not implemented.
+};
+
+#endif

@@ -49,6 +49,10 @@ IF(NOT("${VTK_QT_VERSION}" STREQUAL ""))
     QT5_USE_MODULES(SceneString Core Gui Concurrent Qml)
     TARGET_LINK_LIBRARIES(SceneString ${VTK_LIBRARIES})
 
+    ADD_EXECUTABLE(VegaChart VegaChart.cxx)
+    QT5_USE_MODULES(VegaChart Core Gui Concurrent Qml)
+    TARGET_LINK_LIBRARIES(VegaChart ${VTK_LIBRARIES})
+
   ELSE()
       FIND_PACKAGE(Qt4 REQUIRED)
       INCLUDE(${QT_USE_FILE})

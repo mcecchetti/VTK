@@ -1,0 +1,15 @@
+vtk_module(vtkChartsVegaRenderer
+  GROUPS
+     StandAlone
+  DEPENDS
+    vtkRenderingContext2D
+    vtkCommonSystem
+    vtkCommonMisc
+    vtkCommonCore
+    vtkCommonColor
+    vtkIOCore
+    vtkIOImage
+  PRIVATE_DEPENDS
+    vtkjsoncpp
+    vtksys
+  )
