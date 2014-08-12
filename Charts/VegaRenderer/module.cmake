@@ -3,6 +3,7 @@ vtk_module(vtkChartsVegaRenderer
      StandAlone
   DEPENDS
     vtkRenderingContext2D
+    vtkRenderingOpenGL
     vtkCommonSystem
     vtkCommonMisc
     vtkCommonCore
@@ -12,4 +13,11 @@ vtk_module(vtkChartsVegaRenderer
   PRIVATE_DEPENDS
     vtkjsoncpp
     vtksys
+  TEST_DEPENDS
+    vtkIOImage
+    vtkCommonExecutionModel
+    vtkRendering${VTK_RENDERING_BACKEND}
+    vtkTestingCore
+    vtkTestingRendering
+    vtkInteractionStyle
   )

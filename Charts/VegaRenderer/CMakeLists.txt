@@ -2,6 +2,7 @@ set(Module_SRCS
   vtkVegaRenderer.cxx
   vtkVegaDataLoader.cxx
   vtkVegaImageLoader.cxx
+  vtkSVGPath.cxx
   vtkVegaMarkItemCollection.cxx
   vtkVegaMarkItem.cxx
   vtkVegaSceneItem.cxx
