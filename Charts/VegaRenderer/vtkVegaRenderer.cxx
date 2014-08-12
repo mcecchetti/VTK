@@ -17,6 +17,7 @@
 #include "vtkObjectFactory.h"
 #include "vtkSmartPointer.h"
 #include "vtkNamedColors.h"
+#include "vtkSVGPath.h"
 #include "vtkVegaMarkItemCollection.h"
 #include "vtkVegaSceneItem.h"
 #include "vtkVegaArcItem.h"
@@ -79,6 +80,9 @@ struct DefaultValues
   Json::Value ImageAlign;
   Json::Value ImageBaseline;
   Json::Value Url;
+
+  Json::Value Size;
+  Json::Value Shape;
 };
 
 
@@ -100,9 +104,9 @@ DefaultValues::DefaultValues()
     TextOffsetRadius(0.0),
     TextOffsetAngle(0.0),
     Opacity(1.0),
-    FillColor("#000000OO"),
+    FillColor("rgba(0, 0, 0, 0"),
     FillOpacity(1.0),
-    StrokeColor("#000000OO"),
+    StrokeColor("rgba(0, 0, 0, 0"),
     StrokeOpacity(1.0),
     StrokeWidth(1.0),
     FontFamily("sans-serif"),
@@ -114,7 +118,9 @@ DefaultValues::DefaultValues()
     Text(""),
     ImageAlign("left"),
     ImageBaseline("top"),
-    Url("")
+    Url(""),
+    Size(100.0),
+    Shape("circle")
 {
 }
 
@@ -209,6 +215,92 @@ static std::string ToLowerCase(const std::string& str)
     s.push_back(std::tolower(str[i]));
     }
   return s;
+}
+
+
+//------------------------------------------------------------------------------
+static vtkSVGPath* MakePathFromCache(const Json::Value& pathCache)
+{
+  vtkSVGPath* path = vtkSVGPath::New();
+
+  unsigned int n = pathCache.size();
+  for (unsigned int i = 0; i < n; ++i)
+    {
+    const Json::Value& currentData = pathCache[i];
+    unsigned char type = *(currentData[0].asCString());
+    switch (type)
+      {
+      case 'Z':
+        {
+        path->AppendCommand(type);
+        break;
+        }
+      case 'h':
+      case 'H':
+        {
+        float e = currentData[1].asFloat();
+        path->AppendCommand(type, e);
+        break;
+        }
+      case 'v':
+      case 'V':
+        {
+        float e = currentData[1].asFloat();
+        path->AppendCommand(type, e);
+        break;
+        }
+      case 'l':
+      case 'L':
+      case 'm':
+      case 'M':
+      case 't':
+      case 'T':
+        {
+        float ex = currentData[1].asFloat();
+        float ey = currentData[2].asFloat();
+        path->AppendCommand(type, ex, ey);
+        break;
+        }
+      case 'q':
+      case 'Q':
+      case 's':
+      case 'S':
+        {
+        float cx = currentData[1].asFloat();
+        float cy = currentData[2].asFloat();
+        float ex = currentData[3].asFloat();
+        float ey = currentData[4].asFloat();
+        path->AppendCommand(type, cx, cy, ex, ey);
+        break;
+        }
+      case 'c':
+      case 'C':
+        {
+        float c1x = currentData[1].asFloat();
+        float c1y = currentData[2].asFloat();
+        float c2x = currentData[3].asFloat();
+        float c2y = currentData[4].asFloat();
+        float ex = currentData[5].asFloat();
+        float ey = currentData[6].asFloat();
+        path->AppendCommand(type, c1x, c1y, c2x, c2y, ex, ey);
+        break;
+        }
+      case 'a':
+      case 'A':
+        {
+        float cx = currentData[1].asFloat();
+        float cy = currentData[2].asFloat();
+        int a = currentData[2].asInt();
+        bool lf = currentData[4].asBool();
+        bool sf = currentData[5].asBool();
+        float ex = currentData[6].asFloat();
+        float ey = currentData[7].asFloat();
+        path->AppendCommand(type, cx, cy, a, lf, sf, ex, ey);
+        break;
+        }
+      }
+    }
+  return path;
 }
 
 
@@ -512,6 +604,7 @@ bool vtkVegaRenderer::UpdateMarkItem(vtkVegaGroupItem* parentGroup,
 
   if (IsMultiDataSingleItem(MarkItemType::Type))
     {
+    collection->FlagAllAsNotUpdated();
     // A single mark item is created/updated.
     MarkItemType* item = MarkItemType::SafeDownCast(collection->GetMarkItem(0));
     if (item == NULL)
@@ -521,6 +614,8 @@ bool vtkVegaRenderer::UpdateMarkItem(vtkVegaGroupItem* parentGroup,
       }
     // All scene items are passed to the update routine.
     this->UpdateProperties(sceneItems, item);
+    collection->FlagMarkItemAsUpdated(0);
+    collection->RemoveNotUpdatedMarkItems();
     }
   else
     {
@@ -647,9 +742,11 @@ void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
 
 
 //------------------------------------------------------------------------------
-void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
+void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItems,
                                        vtkVegaAreaItem* item)
 {
+  vtkVegaLineItem* base = item;
+  this->UpdateProperties(sceneItems, base);
 }
 
 
@@ -709,9 +806,14 @@ void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
 
 
 //------------------------------------------------------------------------------
-void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
+void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItems,
                                        vtkVegaLineItem* item)
 {
+  if (sceneItems.size() > 0)
+    {
+    vtkVegaPathItem* base = item;
+    this->UpdateProperties(sceneItems[0], base);
+    }
 }
 
 
@@ -719,6 +821,53 @@ void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
 void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
                                        vtkVegaPathItem* item)
 {
+  float x = sceneItem.get("x", this->Defaults->X).asFloat();
+  float y = sceneItem.get("y", this->Defaults->Y).asFloat();
+
+  item->SetX(x);
+  item->SetY(y);
+
+
+  double opacity = sceneItem.get("opacity", this->Defaults->Opacity).asDouble();
+  std::string fillColor = sceneItem.get("fill", this->Defaults->FillColor).asString();
+  double fillOpacity = sceneItem.get("fillOpacity", this->Defaults->FillOpacity).asDouble();
+  std::string strokeColor = sceneItem.get("stroke", this->Defaults->StrokeColor).asString();
+  double strokeOpacity = sceneItem.get("strokeOpacity", this->Defaults->StrokeOpacity).asDouble();
+  float strokeWidth = sceneItem.get("strokeWidth", this->Defaults->StrokeWidth).asFloat();
+
+  item->SetOpacity(opacity);
+  vtkColor4ub color = this->StringColorMapper->HTMLColorToRGBA(fillColor);
+  item->GetBrush()->SetColor(color);
+  if (color[3] != 0)
+    {
+    item->GetBrush()->SetOpacityF(fillOpacity);
+    }
+  color = this->StringColorMapper->HTMLColorToRGBA(strokeColor);
+  item->GetPen()->SetColor(color);
+  if (color[3] != 0)
+    {
+    item->GetPen()->SetOpacityF(strokeOpacity);
+    }
+  item->GetPen()->SetWidth(strokeWidth);
+
+  vtkSmartPointer<vtkSVGPath> path;
+  if (sceneItem.isMember("pathCache"))
+    {
+    const Json::Value& pathCache = sceneItem["pathCache"];
+    path = MakePathFromCache(pathCache);
+    }
+  else if (sceneItem.isMember("path"))
+    {
+    std::string commands = sceneItem["path"].asString();
+    path = vtkSVGPath::New();
+    path->AppendCommandsFromString(commands);
+    }
+  else
+    {
+    path = vtkSVGPath::New();
+    }
+  item->SetPath(path);
+  path->Delete();
 }
 
 
@@ -798,6 +947,68 @@ void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
 void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
                                        vtkVegaSymbolItem* item)
 {
+  float x = sceneItem.get("x", this->Defaults->X).asFloat();
+  float y = sceneItem.get("y", this->Defaults->Y).asFloat();
+  float size = sceneItem.get("size", this->Defaults->Size).asFloat();
+
+  item->SetX(x);
+  item->SetY(y);
+  item->SetSize(size);
+
+
+  double opacity = sceneItem.get("opacity", this->Defaults->Opacity).asDouble();
+  std::string fillColor = sceneItem.get("fill", this->Defaults->FillColor).asString();
+  double fillOpacity = sceneItem.get("fillOpacity", this->Defaults->FillOpacity).asDouble();
+  std::string strokeColor = sceneItem.get("stroke", this->Defaults->StrokeColor).asString();
+  double strokeOpacity = sceneItem.get("strokeOpacity", this->Defaults->StrokeOpacity).asDouble();
+  float strokeWidth = sceneItem.get("strokeWidth", this->Defaults->StrokeWidth).asFloat();
+
+  item->SetOpacity(opacity);
+  vtkColor4ub color = this->StringColorMapper->HTMLColorToRGBA(fillColor);
+  item->GetBrush()->SetColor(color);
+  if (color[3] != 0)
+    {
+    item->GetBrush()->SetOpacityF(fillOpacity);
+    }
+  color = this->StringColorMapper->HTMLColorToRGBA(strokeColor);
+  item->GetPen()->SetColor(color);
+  if (color[3] != 0)
+    {
+    item->GetPen()->SetOpacityF(strokeOpacity);
+    }
+  item->GetPen()->SetWidth(strokeWidth);
+
+
+  std::string shape = sceneItem.get("shape", this->Defaults->Shape).asString();
+
+  int shapeId = vtkVegaSymbolItem::CIRCLE;
+  if (shape.compare("circle") == 0)
+    {
+    shapeId = vtkVegaSymbolItem::CIRCLE;
+    }
+  else if (shape.compare("square") == 0)
+    {
+    shapeId = vtkVegaSymbolItem::SQUARE;
+    }
+  else if (shape.compare("cross") == 0)
+    {
+    shapeId = vtkVegaSymbolItem::CROSS;
+    }
+  else if (shape.compare("diamond") == 0)
+    {
+    shapeId = vtkVegaSymbolItem::DIAMOND;
+    }
+  else if (shape.compare("triangle-up") == 0)
+    {
+    shapeId = vtkVegaSymbolItem::TRIANGLE_UP;
+    }
+  else if (shape.compare("triangle-down") == 0)
+    {
+    shapeId = vtkVegaSymbolItem::TRIANGLE_DOWN;
+    }
+
+  item->SetShape(shapeId);
+
 }
 
 

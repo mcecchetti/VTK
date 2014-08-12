@@ -21,17 +21,17 @@
 #define __vtkVegaLineItem_h
 
 #include "vtkChartsVegaRendererModule.h" // For export macro
-#include "vtkVegaMarkItem.h"
+#include "vtkVegaPathItem.h"
 
 
-class VTKCHARTSVEGARENDERER_EXPORT vtkVegaLineItem : public vtkVegaMarkItem
+class VTKCHARTSVEGARENDERER_EXPORT vtkVegaLineItem : public vtkVegaPathItem
 {
 public:
   static const int Type = vtkVegaMarkItem::LINE;
 
 public:
   static vtkVegaLineItem *New();
-  vtkTypeMacro(vtkVegaLineItem, vtkVegaMarkItem);
+  vtkTypeMacro(vtkVegaLineItem, vtkVegaPathItem);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
   virtual bool Paint(vtkContext2D *painter);

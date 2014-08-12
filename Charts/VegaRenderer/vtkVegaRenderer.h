@@ -82,9 +82,9 @@ protected:
                       int index);
   bool UpdateProperties(const Json::Value& scene, vtkVegaSceneItem* item);
   void UpdateProperties(const Json::Value& sceneItem, vtkVegaArcItem* item);
-  void UpdateProperties(const Json::Value& sceneItem, vtkVegaAreaItem* item);
+  void UpdateProperties(const Json::Value& sceneItems, vtkVegaAreaItem* item);
   void UpdateProperties(const Json::Value& sceneItem, vtkVegaImageItem* item);
-  void UpdateProperties(const Json::Value& sceneItem, vtkVegaLineItem* item);
+  void UpdateProperties(const Json::Value& sceneItems, vtkVegaLineItem* item);
   void UpdateProperties(const Json::Value& sceneItem, vtkVegaPathItem* item);
   void UpdateProperties(const Json::Value& sceneItem, vtkVegaRectItem* item);
   void UpdateProperties(const Json::Value& sceneItem, vtkVegaRuleItem* item);

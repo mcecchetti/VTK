@@ -14,9 +14,14 @@
  =========================================================================*/
 
 
-#include "vtkVegaRenderer.h"
+#include "vtkSVGPath.h"
 #include "vtkVegaSceneItem.h"
+#include "vtkVegaMarkItemCollection.h"
+#include "vtkVegaPathItem.h"
 #include "vtkSmartPointer.h"
+#include "vtkPen.h"
+#include "vtkBrush.h"
+#include "vtkColor.h"
 
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
@@ -27,48 +32,32 @@
 #include <iostream>
 #include <string>
 
-#include <QFile>
-#include <QTextStream>
-#include <QString>
-
-typedef std::string String;
-
-//------------------------------------------------------------------------------
-bool ReadFile(const String& filePath, String& fileContent)
-{
-  QFile scriptFile(QString::fromStdString(filePath));
-  if (!scriptFile.open(QIODevice::ReadOnly))
-    {
-    return false;
-    }
-  QTextStream stream(&scriptFile);
-  QString contents = stream.readAll();
-  scriptFile.close();
-  fileContent = contents.toStdString();
-  return true;
-}
-
 
 
 int main(int argc, char *argv[])
 {
-  String fileContent;
-  ReadFile(argv[1], fileContent);
+  vtkSmartPointer<vtkSVGPath> path = vtkSmartPointer<vtkSVGPath>::New();
+  path->AppendCommandsFromString(
+      "M 20,10 l 100,100 h 50 v -50 a 200,100 15 1 1 -50,100 Z"
+      "M 100,100 l 0,100 l100,-100 l 0,100 Z"
+      "M 10,300 q 100,50 150,0 t 200,50"
+      "c 150,50 -230,120 150,200 s -200,80 -330,-300 Z");
 
-  vtkSmartPointer<vtkVegaRenderer> renderer = vtkSmartPointer<vtkVegaRenderer>::New();
-  renderer->SetInputSceneString(fileContent);
+  std::cout << "path: '" << path->ToString() << "'\n";
 
-  std::string scene = renderer->GetInputSceneString();
-
-  //std::cout << scene << std::endl;
-
-  // Set base url for data retrieving, e.g. images.
-  renderer->SetBaseDataURL("file:///opt/shared/work/source_code/vega/vega/examples");
-
-  //renderer->DebugOn();
-  renderer->Update();
-  vtkVegaSceneItem* sceneItem = renderer->GetSceneItem();
-  //sceneItem->PrintSelf(std::cout, vtkIndent(2));
+  vtkSmartPointer<vtkVegaSceneItem> sceneItem =
+      vtkSmartPointer<vtkVegaSceneItem>::New();
+  sceneItem->SetWidth(800);
+  sceneItem->SetHeight(600);
+  sceneItem->GetBrush()->SetColor(255, 255, 255, 255);
+  vtkVegaMarkItemCollection* markItems = sceneItem->GetMarkItemCollection(0);
+  markItems->SetMarkType(vtkVegaMarkItem::PATH);
+  vtkVegaMarkItem* item = markItems->GetMarkItem(0);
+  vtkVegaPathItem* pathItem = vtkVegaPathItem::SafeDownCast(item);
+  pathItem->GetPen()->SetWidth(1.0);
+  pathItem->GetPen()->SetColor(0, 0, 0, 255);
+  pathItem->GetBrush()->SetColor(100, 100, 255, 255);
+  pathItem->SetPath(path);
 
   int width = static_cast<int>(sceneItem->GetWidth()) + 30;
   int height = static_cast<int>(sceneItem->GetHeight()) + 30;
@@ -78,12 +67,10 @@ int main(int argc, char *argv[])
   view->GetRenderWindow()->SetSize(width, height);
   view->GetScene()->AddItem(sceneItem);
 
-
   // Render the scene and compare the image to a reference image
   view->GetRenderWindow()->SetMultiSamples(0);
   view->GetInteractor()->Initialize();
   view->GetInteractor()->Start();
-
 
   return EXIT_SUCCESS;
 }

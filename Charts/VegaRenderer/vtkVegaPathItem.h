@@ -22,7 +22,9 @@
 
 #include "vtkChartsVegaRendererModule.h" // For export macro
 #include "vtkVegaMarkItem.h"
+#include "vtkSmartPointer.h"
 
+class vtkSVGPath;
 
 class VTKCHARTSVEGARENDERER_EXPORT vtkVegaPathItem : public vtkVegaMarkItem
 {
@@ -34,12 +36,17 @@ public:
   vtkTypeMacro(vtkVegaPathItem, vtkVegaMarkItem);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
+  void SetPath(vtkSVGPath *path);
+  vtkSVGPath* GetPath();
+
   virtual bool Paint(vtkContext2D *painter);
 
 protected:
   vtkVegaPathItem();
   ~vtkVegaPathItem();
 
+protected:
+  vtkSmartPointer<vtkSVGPath> Path;
 
 private:
   vtkVegaPathItem(const vtkVegaPathItem& );  // Not implemented.

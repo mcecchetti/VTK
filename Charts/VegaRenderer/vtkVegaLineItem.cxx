@@ -45,6 +45,7 @@ vtkVegaLineItem::~vtkVegaLineItem()
 //------------------------------------------------------------------------------
 bool vtkVegaLineItem::Paint(vtkContext2D* painter)
 {
-
-  return true;
+  this->X = 0.0;
+  this->Y = 0.0;
+  return this->Superclass::Paint(painter);
 }

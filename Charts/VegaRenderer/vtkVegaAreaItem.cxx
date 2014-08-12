@@ -45,6 +45,5 @@ vtkVegaAreaItem::~vtkVegaAreaItem()
 //------------------------------------------------------------------------------
 bool vtkVegaAreaItem::Paint(vtkContext2D* painter)
 {
-
-  return true;
+  return this->Superclass::Paint(painter);
 }

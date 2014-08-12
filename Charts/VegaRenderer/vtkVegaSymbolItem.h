@@ -21,24 +21,52 @@
 #define __vtkVegaSymbolItem_h
 
 #include "vtkChartsVegaRendererModule.h" // For export macro
-#include "vtkVegaMarkItem.h"
+#include "vtkVegaPathItem.h"
 
 
-class VTKCHARTSVEGARENDERER_EXPORT vtkVegaSymbolItem : public vtkVegaMarkItem
+class VTKCHARTSVEGARENDERER_EXPORT vtkVegaSymbolItem : public vtkVegaPathItem
 {
 public:
   static const int Type = vtkVegaMarkItem::SYMBOL;
 
 public:
+  enum
+  {
+    CIRCLE = 0,
+    SQUARE,
+    CROSS,
+    DIAMOND,
+    TRIANGLE_UP,
+    TRIANGLE_DOWN,
+    UNKNOWN
+  };
+
+public:
   static vtkVegaSymbolItem *New();
-  vtkTypeMacro(vtkVegaSymbolItem, vtkVegaMarkItem);
+  vtkTypeMacro(vtkVegaSymbolItem, vtkVegaPathItem);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
+
+  vtkSetMacro(Shape, int);
+  vtkGetMacro(Shape, int);
+
+  vtkSetMacro(Size, float);
+  vtkGetMacro(Size, float);
 
   virtual bool Paint(vtkContext2D *painter);
 
 protected:
   vtkVegaSymbolItem();
   ~vtkVegaSymbolItem();
+
+  void DrawCircle();
+  void DrawSquare();
+  void DrawCross();
+  void DrawDiamond();
+  void DrawTriangleUp();
+  void DrawTriangleDown();
+
+  int Shape;
+  float Size;
 
 
 private:
