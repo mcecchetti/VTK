@@ -52,8 +52,18 @@ bool ReadFile(const String& filePath, String& fileContent)
 
 int main(int argc, char *argv[])
 {
+  if (argc < 1)
+    {
+    std::cout << "No scene graph argument" << std::endl;
+    return EXIT_FAILURE;
+    }
+
   String fileContent;
-  ReadFile(argv[1], fileContent);
+  if (!ReadFile(argv[1], fileContent))
+      {
+      std::cout << "Error: Passed file is not accessible." << std::endl;
+      return EXIT_FAILURE;
+      }
 
   vtkSmartPointer<vtkVegaRenderer> renderer = vtkSmartPointer<vtkVegaRenderer>::New();
   renderer->SetInputSceneString(fileContent);
