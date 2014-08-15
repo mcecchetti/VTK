@@ -33,6 +33,9 @@ vtkStandardNewMacro(vtkVegaSymbolItem);
 void vtkVegaSymbolItem::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
+
+  os << indent << "Shape: " << this->GetShapeAsString() << "\n";
+  os << indent << "Size: " << this->Size <<  "\n";
 }
 
 
@@ -47,6 +50,28 @@ vtkVegaSymbolItem::vtkVegaSymbolItem()
 //------------------------------------------------------------------------------
 vtkVegaSymbolItem::~vtkVegaSymbolItem()
 {}
+
+
+//------------------------------------------------------------------------------
+const char * vtkVegaSymbolItem::GetShapeAsString()
+{
+  switch (this->Shape)
+    {
+    default:
+    case vtkVegaSymbolItem::CIRCLE:
+      return "Circle";
+    case vtkVegaSymbolItem::SQUARE:
+      return "Square";
+    case vtkVegaSymbolItem::CROSS:
+      return "Cross";
+    case vtkVegaSymbolItem::DIAMOND:
+      return "Diamond";
+    case vtkVegaSymbolItem::TRIANGLE_UP:
+      return "Triangle up";
+    case vtkVegaSymbolItem::TRIANGLE_DOWN:
+      return "Triangle down";
+    }
+}
 
 
 //------------------------------------------------------------------------------
@@ -87,8 +112,8 @@ bool vtkVegaSymbolItem::Paint(vtkContext2D* painter)
       }
     }
 
-  this->Superclass::Paint(painter);
-  return true;
+  // Symbol shapes are rendered as SVG paths.
+  return this->Superclass::Paint(painter);
 }
 
 //------------------------------------------------------------------------------

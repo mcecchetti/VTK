@@ -12,10 +12,11 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkVegaArcItem -
+// .NAME vtkVegaArcItem - The class which handles Vega mark item of arc type.
 //
 // .SECTION Description
-// vtkVegaArcItem
+// vtkVegaArcItem provides the properties and functionality typical
+// of a Vega mark item of arc type.
 
 #ifndef __vtkVegaArcItem_h
 #define __vtkVegaArcItem_h
@@ -34,15 +35,25 @@ public:
   vtkTypeMacro(vtkVegaArcItem, vtkVegaMarkItem);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
+  // Description:
+  // Methods for set/get the inner radius of the arc, in pixels.
   vtkSetMacro(OuterRadius, float);
   vtkGetMacro(OuterRadius, float);
 
+  // Description:
+  // Methods for set/get the outer radius of the arc, in pixels.
   vtkSetMacro(InnerRadius, float);
   vtkGetMacro(InnerRadius, float);
 
+  // Description:
+  // Methods for set/get the start angle of the arc, in radians.
+  // A value of 0 indicates up or "north", increasing values proceed clockwise.
   vtkSetMacro(StartAngle, double);
   vtkGetMacro(StartAngle, double);
 
+  // Description:
+  // Methods for set/get the end angle of the arc, in radians.
+  // A value of 0 indicates up or "north", increasing values proceed clockwise.
   vtkSetMacro(EndAngle, double);
   vtkGetMacro(EndAngle, double);
 

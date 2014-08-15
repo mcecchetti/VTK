@@ -42,6 +42,24 @@ void vtkVegaTextItem::PrintSelf(ostream& os, vtkIndent indent)
     os << "NULL";
     }
   os << "\n";
+
+  os << indent << "Font family: "
+     << this->TextProperty->GetFontFamilyAsString() << "\n";
+  os << indent << "Font size: " << this->TextProperty->GetFontSize() << "\n";
+  os << indent << "Font bold: " << this->TextProperty->GetBold() << "\n";
+  os << indent << "Font italic: " << this->TextProperty->GetItalic() << "\n";
+
+  os << indent << "Align: "
+     << this->TextProperty->GetJustificationAsString() << "\n";
+  os << indent << "Baseline: "
+     << this->TextProperty->GetVerticalJustificationAsString() << "\n";
+
+  os << indent << "Text angle: " << this->TextProperty->GetOrientation() << "\n";
+
+  os << indent << "Dx: " << this->Dx << "\n";
+  os << indent << "Dy: " << this->Dy << "\n";
+  os << indent << "Radius: " << this->Radius << "\n";
+  os << indent << "Theta: " << this->Theta << "\n";
 }
 
 

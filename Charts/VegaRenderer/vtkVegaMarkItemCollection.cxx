@@ -35,7 +35,7 @@ vtkStandardNewMacro(vtkVegaMarkItemCollection);
 //------------------------------------------------------------------------------
 void vtkVegaMarkItemCollection::PrintSelf(ostream& os, vtkIndent indent)
 {
-  //this->Superclass::PrintSelf(os, indent);
+  this->Superclass::PrintSelf(os, indent);
   os << indent << "Mark item type: "
      << vtkVegaMarkItem::GetMarkName(this->MarkType)
      << " (enum: " << this->MarkType << ")" << "\n";

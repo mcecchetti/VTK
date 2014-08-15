@@ -12,10 +12,11 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkVegaPathItem -
+// .NAME vtkVegaPathItem - The class which handles Vega mark item of path type.
 //
 // .SECTION Description
-// vtkVegaPathItem
+// vtkVegaPathItem provides the properties and functionality typical
+// of a Vega mark item of path type.
 
 #ifndef __vtkVegaPathItem_h
 #define __vtkVegaPathItem_h
@@ -36,6 +37,8 @@ public:
   vtkTypeMacro(vtkVegaPathItem, vtkVegaMarkItem);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
+  // Description:
+  // Methods for set/get an SVG path defined through an vtkSVGPath object.
   void SetPath(vtkSVGPath *path);
   vtkSVGPath* GetPath();
 

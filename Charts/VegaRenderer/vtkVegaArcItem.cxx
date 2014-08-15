@@ -61,6 +61,8 @@ bool vtkVegaArcItem::Paint(vtkContext2D* painter)
 
   static const double HALFPI = vtkMath::Pi() / 2.0;
 
+  // We need to subtract PI/2 since a value of 0 indicates up or "north" and
+  // increasing values proceed clockwise
   float startAngle = vtkMath::DegreesFromRadians(this->StartAngle - HALFPI);
   float stopAngle = vtkMath::DegreesFromRadians(this->EndAngle - HALFPI);
 

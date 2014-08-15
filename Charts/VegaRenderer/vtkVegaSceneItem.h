@@ -12,10 +12,13 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkVegaSceneItem -
+// .NAME vtkVegaSceneItem - The class which represents the root mark item
+// of a Vega scene graph.
 //
 // .SECTION Description
-// vtkVegaSceneItem
+// vtkVegaSceneItem inherits from vtkVegaGroupItem, but it has some special
+// features since it represents the root mark item of a Vega scene graph.
+// It defines padding properties (top, left, bottom, right) for the scene.
 
 #ifndef __vtkVegaSceneItem_h
 #define __vtkVegaSceneItem_h
@@ -34,6 +37,8 @@ public:
   vtkTypeMacro(vtkVegaSceneItem, vtkVegaGroupItem);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
+  // Description:
+  // Methods for set/get the scene padding properties.
   vtkSetMacro(TopPadding, float);
   vtkGetMacro(TopPadding, float);
   vtkSetMacro(BottomPadding, float);
@@ -45,6 +50,10 @@ public:
   void SetPadding(float top, float left, float bottom, float right);
   void GetPadding(float *padding);
 
+  // Invokes the Paint method on all collections of mark items which made up
+  // the scene. Since in SVG and in Canvas 2D context the Y axis points
+  // downwards whilst in vtkContext2D points upwards, this method performs
+  // a transformation in order to swap the Y axis direction.
   virtual bool Paint(vtkContext2D *painter);
 
 protected:

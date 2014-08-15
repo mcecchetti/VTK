@@ -22,7 +22,7 @@
 //------------------------------------------------------------------------------
 void vtkVegaMarkItem::PrintSelf(ostream& os, vtkIndent indent)
 {
-  //this->Superclass::PrintSelf(os, indent);
+  this->Superclass::PrintSelf(os, indent);
   os << indent << "X: " << this->X << "\n";
   os << indent << "Y: " << this->Y << "\n";
   os << indent << "X2: " << this->X2 << "\n";
@@ -149,6 +149,8 @@ bool vtkVegaMarkItem::IsBrushVisible()
 
 
 //------------------------------------------------------------------------------
+// Compute the actual opacity of a tool (pen, brush) taking into account the
+// global opacity of this mark item.
 unsigned char vtkVegaMarkItem::GetGlobalOpacity(unsigned char toolOpacity)
 {
   return static_cast<unsigned char>(toolOpacity * this->GetOpacity());
@@ -156,6 +158,8 @@ unsigned char vtkVegaMarkItem::GetGlobalOpacity(unsigned char toolOpacity)
 
 
 //------------------------------------------------------------------------------
+// Set the pen properties of the passed painter object to the pen properties of
+// this mark item.
 void vtkVegaMarkItem::ApplyPen(vtkContext2D *painter)
 {
   painter->ApplyPen(this->GetPen());
@@ -166,6 +170,8 @@ void vtkVegaMarkItem::ApplyPen(vtkContext2D *painter)
 
 
 //------------------------------------------------------------------------------
+// Set the brush properties of the passed painter object to the brush properties
+// of this mark item.
 void vtkVegaMarkItem::ApplyBrush(vtkContext2D *painter)
 {
   painter->ApplyBrush(this->GetBrush());

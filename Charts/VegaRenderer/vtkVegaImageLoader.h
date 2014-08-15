@@ -12,10 +12,11 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkVegaImageLoader -
+// .NAME vtkVegaImageLoader - Helper class for loading an image from a given URL.
 //
 // .SECTION Description
-// vtkVegaImageLoader
+// vtkVegaImageLoader is a specialization of vtkVegaDataLoader and is used for
+// loading an image from the resource specified by a given URI.
 
 #ifndef __vtkVegaImageLoader_h
 #define __vtkVegaImageLoader_h
@@ -33,9 +34,12 @@ public:
   vtkTypeMacro(vtkVegaImageLoader, vtkVegaDataLoader);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
+  // Description:
+  // Retrieve the image resource specified by the set URI and load it into memory.
   virtual void Update();
 
-
+  // Description:
+  // Return a pointer to the loaded image, or NULL if no image has been loaded.
   vtkImageData* GetOutputImage();
 
 protected:

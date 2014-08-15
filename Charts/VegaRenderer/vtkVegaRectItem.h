@@ -12,10 +12,11 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkVegaRectItem -
+// .NAME vtkVegaRectItem - The class which handles Vega mark item of rect type.
 //
 // .SECTION Description
-// vtkVegaRectItem
+// vtkVegaRectItem provides the properties and functionality typical
+// of a Vega mark item of rect type.
 
 #ifndef __vtkVegaRectItem_h
 #define __vtkVegaRectItem_h

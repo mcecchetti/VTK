@@ -28,7 +28,7 @@ vtkStandardNewMacro(vtkVegaGroupItem);
 //------------------------------------------------------------------------------
 void vtkVegaGroupItem::PrintSelf(ostream& os, vtkIndent indent)
 {
-  //this->Superclass::PrintSelf(os, indent);
+  this->Superclass::PrintSelf(os, indent);
   unsigned int n = this->GetNumberOfCollections();
   for (unsigned int i = 0; i < n; ++i)
     {

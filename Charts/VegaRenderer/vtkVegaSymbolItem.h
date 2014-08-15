@@ -12,10 +12,11 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkVegaSymbolItem -
+// .NAME vtkVegaSymbolItem - The class which handles Vega mark item of symbol type.
 //
 // .SECTION Description
-// vtkVegaSymbolItem
+// vtkVegaSymbolItem provides the properties and functionality typical
+// of a Vega mark item of symbol type.
 
 #ifndef __vtkVegaSymbolItem_h
 #define __vtkVegaSymbolItem_h
@@ -30,6 +31,8 @@ public:
   static const int Type = vtkVegaMarkItem::SYMBOL;
 
 public:
+  // Description:
+  // Valid types of symbol shapes.
   enum
   {
     CIRCLE = 0,
@@ -46,9 +49,17 @@ public:
   vtkTypeMacro(vtkVegaSymbolItem, vtkVegaPathItem);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
+  // Description:
+  // Methods for set/get the symbol shape to use. One of circle (default),
+  // square, cross, diamond, triangle-up, or triangle-down.
   vtkSetMacro(Shape, int);
   vtkGetMacro(Shape, int);
+  const char * GetShapeAsString();
 
+  // Description:
+  // Methods for set/get the pixel area of the symbol.
+  // For example: in the case of circles, the radius is determined in part
+  // by the square root of the size value.
   vtkSetMacro(Size, float);
   vtkGetMacro(Size, float);
 

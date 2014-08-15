@@ -72,7 +72,6 @@ void vtkVegaImageItem::PrintSelf(ostream& os, vtkIndent indent)
     {
     os << indent << "Url:\n";
     }
-
 }
 
 
@@ -103,7 +102,8 @@ bool vtkVegaImageItem::Paint(vtkContext2D* painter)
     return true;
     }
 
-  vtkSmartPointer<vtkVegaImageLoader> loader = vtkSmartPointer<vtkVegaImageLoader>::New();
+  vtkSmartPointer<vtkVegaImageLoader> loader =
+      vtkSmartPointer<vtkVegaImageLoader>::New();
   loader->SetInputURI(this->GetUrl());
   loader->Update();
   vtkImageData* image = loader->GetOutputImage();

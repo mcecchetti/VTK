@@ -12,10 +12,11 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkVegaImageItem -
+// .NAME vtkVegaImageItem - The class which handles Vega mark item of image type.
 //
 // .SECTION Description
-// vtkVegaImageItem
+// vtkVegaImageItem provides the properties and functionality typical
+// of a Vega mark item of image type.
 
 #ifndef __vtkVegaImageItem_h
 #define __vtkVegaImageItem_h
@@ -30,12 +31,16 @@ public:
   static const int Type = vtkVegaMarkItem::IMAGE;
 
 public:
+  // Description:
+  // Valid horizontal alignment types.
   enum AlignEnum {
     LEFT = 0,
     CENTER,
     RIGHT
   };
 
+  // Description:
+  // Valid vertical alignment types.
   enum BaselineEnum {
     TOP = 0,
     MIDDLE,
@@ -47,12 +52,20 @@ public:
   vtkTypeMacro(vtkVegaImageItem, vtkVegaMarkItem);
   virtual void PrintSelf(ostream& os, vtkIndent indent);
 
+  // Description:
+  // Methods for set/get the horizontal alignment of the image.
+  // One of left, right, center.
   vtkSetMacro(Align, int);
   vtkGetMacro(Align, int);
 
+  // Description:
+  // Methods for set/get the vertical alignment of the image.
+  // One of top, middle, bottom.
   vtkSetMacro(Baseline, int);
   vtkGetMacro(Baseline, int);
 
+  // Description:
+  // Methods for set/get the URL from which to retrieve the image.
   vtkSetStringMacro(Url);
   vtkGetStringMacro(Url);
 

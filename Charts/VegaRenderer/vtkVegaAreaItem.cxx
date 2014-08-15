@@ -45,5 +45,6 @@ vtkVegaAreaItem::~vtkVegaAreaItem()
 //------------------------------------------------------------------------------
 bool vtkVegaAreaItem::Paint(vtkContext2D* painter)
 {
+  // Vega mark items of area type are rendered as filled SVG path.
   return this->Superclass::Paint(painter);
 }

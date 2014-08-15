@@ -12,10 +12,10 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkVegaLineItem -
+// .NAME vtkVegaLineItem - The class which handles Vega mark item of area type.
 //
 // .SECTION Description
-// vtkVegaLineItem
+// vtkVegaLineItem is used for rendering mark of line type.
 
 #ifndef __vtkVegaLineItem_h
 #define __vtkVegaLineItem_h

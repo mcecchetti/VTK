@@ -44,6 +44,13 @@ vtkStandardNewMacro(vtkVegaPathItem);
 void vtkVegaPathItem::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
+
+  os << indent << "Path: '";
+  if (this->Path.GetPointer())
+    {
+    os << this->Path->ToString();
+    }
+  os << "'\n";
 }
 
 

@@ -28,6 +28,11 @@ vtkStandardNewMacro(vtkVegaSceneItem);
 void vtkVegaSceneItem::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf(os, indent);
+
+  os << indent << "TopPadding: " << this->TopPadding << "\n";
+  os << indent << "BottomPadding: " << this->BottomPadding << "\n";
+  os << indent << "LeftPadding: " << this->LeftPadding << "\n";
+  os << indent << "RightPadding: " << this->RightPadding << "\n";
 }
 
 

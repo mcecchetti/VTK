@@ -45,6 +45,9 @@ vtkVegaLineItem::~vtkVegaLineItem()
 //------------------------------------------------------------------------------
 bool vtkVegaLineItem::Paint(vtkContext2D* painter)
 {
+  // Vega mark items of area type are rendered as filled SVG path.
+  // The top-left point of a line item must be always (0,0).
+  // A leading `moveTo` command is responsible to place it at the right place.
   this->X = 0.0;
   this->Y = 0.0;
   return this->Superclass::Paint(painter);

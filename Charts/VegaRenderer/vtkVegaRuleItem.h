@@ -12,10 +12,11 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkVegaRuleItem -
+// .NAME vtkVegaRuleItem - The class which handles Vega mark item of rule type.
 //
 // .SECTION Description
-// vtkVegaRuleItem
+// vtkVegaRuleItem provides the properties and functionality typical
+// of a Vega mark item of rule type.
 
 #ifndef __vtkVegaRuleItem_h
 #define __vtkVegaRuleItem_h
