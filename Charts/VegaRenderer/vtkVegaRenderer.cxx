@@ -664,16 +664,49 @@ void vtkVegaRenderer::UpdateGroupItem(vtkVegaGroupItem* parentGroup,
 
     vtkVegaGroupItem* group = vtkVegaGroupItem::SafeDownCast(collection->GetMarkItem(i));
 
+    // For each axis we check if it has to be drawn at the back or at the front
+    // respect with the mark items which made up the charts.
+    std::vector<bool> axesAtFront;
+    axesAtFront.reserve(axes.size());
+    std::string layer;
     for (unsigned int j = 0, m = axes.size(); j < m; ++j)
       {
-      this->UpdateGroupItem(group, axes[j], idx++);
+      if (axes[j].isMember("def") && axes[j]["def"].isMember("layer"))
+        {
+        layer = axes[j]["def"]["layer"].asString();
+        axesAtFront.push_back(layer.compare("back") != 0);
+        }
+      else // default is at front
+        {
+        axesAtFront.push_back(true);
+        }
       }
 
+    // Draw axes that has to be placed at back.
+    for (unsigned int j = 0, m = axes.size(); j < m; ++j)
+      {
+      if (!axesAtFront[j])
+        {
+        this->UpdateGroupItem(group, axes[j], idx++);
+        }
+      }
+
+    // Draw chart items.
     for (unsigned int j = 0, m = items.size(); j < m; ++j)
       {
       this->UpdateDispatch(group, items[j], idx++);
       }
 
+    // Draw axes that has to be placed at front.
+    for (unsigned int j = 0, m = axes.size(); j < m; ++j)
+      {
+      if (axesAtFront[j])
+        {
+        this->UpdateGroupItem(group, axes[j], idx++);
+        }
+      }
+
+    // Draw legend.
     for (unsigned int j = 0, m = legends.size(); j < m; ++j)
       {
       this->UpdateGroupItem(group, legends[j], idx++);
