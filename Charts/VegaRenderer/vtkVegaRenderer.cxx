@@ -792,6 +792,71 @@ bool vtkVegaRenderer::UpdateMarkItem(vtkVegaGroupItem* parentGroup,
 
 
 //------------------------------------------------------------------------------
+// Helper functions for the UpdateProperties methods.
+static inline
+void SetXYProperties(const Json::Value& sceneItem, vtkVegaMarkItem* item,
+                     DefaultValues* defaults)
+{
+  float x = sceneItem.get("x", defaults->X).asFloat();
+  float y = sceneItem.get("y", defaults->Y).asFloat();
+
+  item->SetX(x);
+  item->SetY(y);
+}
+
+static inline
+void SetWHProperties(const Json::Value& sceneItem, vtkVegaMarkItem* item,
+                     DefaultValues* defaults)
+{
+  float width = sceneItem.get("width", defaults->Width).asFloat();
+  float height = sceneItem.get("height", defaults->Height).asFloat();
+
+  item->SetWidth(width);
+  item->SetHeight(height);
+}
+
+static inline
+void SetOpacityProperty(const Json::Value& sceneItem, vtkVegaMarkItem* item,
+                        DefaultValues* defaults)
+{
+  double opacity = sceneItem.get("opacity", defaults->Opacity).asDouble();
+  item->SetOpacity(opacity);
+}
+
+static inline
+void SetFillProperties(const Json::Value& sceneItem, vtkVegaMarkItem* item,
+                       DefaultValues* defaults, vtkNamedColors* stringColorMapper)
+{
+  std::string fillColor = sceneItem.get("fill", defaults->FillColor).asString();
+  double fillOpacity = sceneItem.get("fillOpacity", defaults->FillOpacity).asDouble();
+
+  vtkColor4ub color = stringColorMapper->HTMLColorToRGBA(fillColor);
+  item->GetBrush()->SetColor(color);
+  if (color[3] != 0)
+    {
+    item->GetBrush()->SetOpacityF(fillOpacity);
+    }
+}
+
+static inline
+void SetStrokeProperties(const Json::Value& sceneItem, vtkVegaMarkItem* item,
+                         DefaultValues* defaults, vtkNamedColors* stringColorMapper)
+{
+  std::string strokeColor = sceneItem.get("stroke", defaults->StrokeColor).asString();
+  double strokeOpacity = sceneItem.get("strokeOpacity", defaults->StrokeOpacity).asDouble();
+  float strokeWidth = sceneItem.get("strokeWidth", defaults->StrokeWidth).asFloat();
+
+  vtkColor4ub color = stringColorMapper->HTMLColorToRGBA(strokeColor);
+  item->GetPen()->SetColor(color);
+  if (color[3] != 0)
+    {
+    item->GetPen()->SetOpacityF(strokeOpacity);
+    }
+  item->GetPen()->SetWidth(strokeWidth);
+}
+
+
+//------------------------------------------------------------------------------
 // UpdateProperties family of methods take in input two arguments:
 // the first argument is a single mark item of the Vega scene graph,
 // the second argument is a mark item object whose class type matches the mark
@@ -844,7 +909,7 @@ bool vtkVegaRenderer::UpdateProperties(const Json::Value& scene,
 
               vtkColor4ub color(0, 0, 0, 0);
               item->GetBrush()->SetColor(color);
-              color = vtkColor4ub(0, 0, 0, 255);
+              color = vtkColor4ub(0, 0, 0, 0);
               item->GetPen()->SetColor(color);
               return true;
               }
@@ -862,42 +927,22 @@ bool vtkVegaRenderer::UpdateProperties(const Json::Value& scene,
 void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
                                        vtkVegaArcItem* item)
 {
-  float x = sceneItem.get("x", this->Defaults->X).asFloat();
-  float y = sceneItem.get("y", this->Defaults->Y).asFloat();
+  SetXYProperties(sceneItem, item, this->Defaults);
+
   float outerRadius = sceneItem.get("outerRadius", this->Defaults->OuterRadius).asFloat();
   float innerRadius = sceneItem.get("innerRadius", this->Defaults->InnerRadius).asFloat();
   float startAngle = sceneItem.get("startAngle", this->Defaults->StartAngle).asFloat();
   float endAngle = sceneItem.get("endAngle", this->Defaults->EndAngle).asFloat();
 
-  item->SetX(x);
-  item->SetY(y);
   item->SetOuterRadius(outerRadius);
   item->SetInnerRadius(innerRadius);
   item->SetStartAngle(startAngle);
   item->SetEndAngle(endAngle);
 
 
-  double opacity = sceneItem.get("opacity", this->Defaults->Opacity).asDouble();
-  std::string fillColor = sceneItem.get("fill", this->Defaults->FillColor).asString();
-  double fillOpacity = sceneItem.get("fillOpacity", this->Defaults->FillOpacity).asDouble();
-  std::string strokeColor = sceneItem.get("stroke", this->Defaults->StrokeColor).asString();
-  double strokeOpacity = sceneItem.get("strokeOpacity", this->Defaults->StrokeOpacity).asDouble();
-  float strokeWidth = sceneItem.get("strokeWidth", this->Defaults->StrokeWidth).asFloat();
-
-  item->SetOpacity(opacity);
-  vtkColor4ub color = this->StringColorMapper->HTMLColorToRGBA(fillColor);
-  item->GetBrush()->SetColor(color);
-  if (color[3] != 0)
-    {
-    item->GetBrush()->SetOpacityF(fillOpacity);
-    }
-  color = this->StringColorMapper->HTMLColorToRGBA(strokeColor);
-  item->GetPen()->SetColor(color);
-  if (color[3] != 0)
-    {
-    item->GetPen()->SetOpacityF(strokeOpacity);
-    }
-  item->GetPen()->SetWidth(strokeWidth);
+  SetOpacityProperty(sceneItem, item, this->Defaults);
+  SetFillProperties(sceneItem, item, this->Defaults, this->StringColorMapper);
+  SetStrokeProperties(sceneItem, item, this->Defaults, this->StringColorMapper);
 }
 
 
@@ -914,16 +959,8 @@ void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItems,
 void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
                                        vtkVegaImageItem* item)
 {
-  float x = sceneItem.get("x", this->Defaults->X).asFloat();
-  float y = sceneItem.get("y", this->Defaults->Y).asFloat();
-  float width = sceneItem.get("width", this->Defaults->Width).asFloat();
-  float height = sceneItem.get("height", this->Defaults->Height).asFloat();
-
-  item->SetX(x);
-  item->SetY(y);
-  item->SetWidth(width);
-  item->SetHeight(height);
-
+  SetXYProperties(sceneItem, item, this->Defaults);
+  SetWHProperties(sceneItem, item, this->Defaults);
 
   // Set horizontal and vertical alignment.
   std::string align = sceneItem.get("align", this->Defaults->ImageAlign).asString();
@@ -955,7 +992,6 @@ void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
     item->SetBaseline(vtkVegaImageItem::TOP);
     }
 
-
   // Set image url.
   std::string url = sceneItem.get("url", this->Defaults->Url).asString();
   url.insert(0, "/");
@@ -981,35 +1017,13 @@ void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItems,
 void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
                                        vtkVegaPathItem* item)
 {
-  float x = sceneItem.get("x", this->Defaults->X).asFloat();
-  float y = sceneItem.get("y", this->Defaults->Y).asFloat();
+  SetXYProperties(sceneItem, item, this->Defaults);
 
-  item->SetX(x);
-  item->SetY(y);
+  SetOpacityProperty(sceneItem, item, this->Defaults);
+  SetFillProperties(sceneItem, item, this->Defaults, this->StringColorMapper);
+  SetStrokeProperties(sceneItem, item, this->Defaults, this->StringColorMapper);
 
-
-  double opacity = sceneItem.get("opacity", this->Defaults->Opacity).asDouble();
-  std::string fillColor = sceneItem.get("fill", this->Defaults->FillColor).asString();
-  double fillOpacity = sceneItem.get("fillOpacity", this->Defaults->FillOpacity).asDouble();
-  std::string strokeColor = sceneItem.get("stroke", this->Defaults->StrokeColor).asString();
-  double strokeOpacity = sceneItem.get("strokeOpacity", this->Defaults->StrokeOpacity).asDouble();
-  float strokeWidth = sceneItem.get("strokeWidth", this->Defaults->StrokeWidth).asFloat();
-
-  item->SetOpacity(opacity);
-  vtkColor4ub color = this->StringColorMapper->HTMLColorToRGBA(fillColor);
-  item->GetBrush()->SetColor(color);
-  if (color[3] != 0)
-    {
-    item->GetBrush()->SetOpacityF(fillOpacity);
-    }
-  color = this->StringColorMapper->HTMLColorToRGBA(strokeColor);
-  item->GetPen()->SetColor(color);
-  if (color[3] != 0)
-    {
-    item->GetPen()->SetOpacityF(strokeOpacity);
-    }
-  item->GetPen()->SetWidth(strokeWidth);
-
+  // Set SVG path
   vtkSmartPointer<vtkSVGPath> path;
   if (sceneItem.isMember("pathCache"))
     {
@@ -1035,38 +1049,12 @@ void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
 void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
                                        vtkVegaRectItem* item)
 {
-  float x = sceneItem.get("x", this->Defaults->X).asFloat();
-  float y = sceneItem.get("y", this->Defaults->Y).asFloat();
-  float width = sceneItem.get("width", this->Defaults->Width).asFloat();
-  float height = sceneItem.get("height", this->Defaults->Height).asFloat();
+  SetXYProperties(sceneItem, item, this->Defaults);
+  SetWHProperties(sceneItem, item, this->Defaults);
 
-  item->SetX(x);
-  item->SetY(y);
-  item->SetWidth(width);
-  item->SetHeight(height);
-
-
-  double opacity = sceneItem.get("opacity", this->Defaults->Opacity).asDouble();
-  std::string fillColor = sceneItem.get("fill", this->Defaults->FillColor).asString();
-  double fillOpacity = sceneItem.get("fillOpacity", this->Defaults->FillOpacity).asDouble();
-  std::string strokeColor = sceneItem.get("stroke", this->Defaults->StrokeColor).asString();
-  double strokeOpacity = sceneItem.get("strokeOpacity", this->Defaults->StrokeOpacity).asDouble();
-  float strokeWidth = sceneItem.get("strokeWidth", this->Defaults->StrokeWidth).asFloat();
-
-  item->SetOpacity(opacity);
-  vtkColor4ub color = this->StringColorMapper->HTMLColorToRGBA(fillColor);
-  item->GetBrush()->SetColor(color);
-  if (color[3] != 0)
-    {
-    item->GetBrush()->SetOpacityF(fillOpacity);
-    }
-  color = this->StringColorMapper->HTMLColorToRGBA(strokeColor);
-  item->GetPen()->SetColor(color);
-  if (color[3] != 0)
-    {
-    item->GetPen()->SetOpacityF(strokeOpacity);
-    }
-  item->GetPen()->SetWidth(strokeWidth);
+  SetOpacityProperty(sceneItem, item, this->Defaults);
+  SetFillProperties(sceneItem, item, this->Defaults, this->StringColorMapper);
+  SetStrokeProperties(sceneItem, item, this->Defaults, this->StringColorMapper);
 }
 
 
@@ -1074,32 +1062,16 @@ void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
 void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
                                        vtkVegaRuleItem* item)
 {
-  const Json::Value& itemX = sceneItem.get("x", this->Defaults->X);
-  float x = itemX.asFloat();
-  const Json::Value& itemY = sceneItem.get("y", this->Defaults->Y);
-  float y = itemY.asFloat();
-  float x2 = sceneItem.get("x2", itemX).asFloat();
-  float y2 = sceneItem.get("y2", itemY).asFloat();
+  SetXYProperties(sceneItem, item, this->Defaults);
 
-  item->SetX(x);
-  item->SetY(y);
+  float x2 = sceneItem.get("x2", item->GetX()).asFloat();
+  float y2 = sceneItem.get("y2", item->GetY()).asFloat();
+
   item->SetX2(x2);
   item->SetY2(y2);
 
-
-  double opacity = sceneItem.get("opacity", this->Defaults->Opacity).asDouble();
-  std::string strokeColor = sceneItem.get("stroke", this->Defaults->StrokeColor).asString();
-  double strokeOpacity = sceneItem.get("strokeOpacity", this->Defaults->StrokeOpacity).asDouble();
-  float strokeWidth = sceneItem.get("strokeWidth", this->Defaults->StrokeWidth).asFloat();
-
-  item->SetOpacity(opacity);
-  vtkColor4ub color = this->StringColorMapper->HTMLColorToRGBA(strokeColor);
-  item->GetPen()->SetColor(color);
-  if (color[3] != 0)
-    {
-    item->GetPen()->SetOpacityF(strokeOpacity);
-    }
-  item->GetPen()->SetWidth(strokeWidth);
+  SetOpacityProperty(sceneItem, item, this->Defaults);
+  SetStrokeProperties(sceneItem, item, this->Defaults, this->StringColorMapper);
 }
 
 
@@ -1107,38 +1079,16 @@ void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
 void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
                                        vtkVegaSymbolItem* item)
 {
-  float x = sceneItem.get("x", this->Defaults->X).asFloat();
-  float y = sceneItem.get("y", this->Defaults->Y).asFloat();
-  float size = sceneItem.get("size", this->Defaults->Size).asFloat();
+  SetXYProperties(sceneItem, item, this->Defaults);
 
-  item->SetX(x);
-  item->SetY(y);
+  float size = sceneItem.get("size", this->Defaults->Size).asFloat();
   item->SetSize(size);
 
+  SetOpacityProperty(sceneItem, item, this->Defaults);
+  SetFillProperties(sceneItem, item, this->Defaults, this->StringColorMapper);
+  SetStrokeProperties(sceneItem, item, this->Defaults, this->StringColorMapper);
 
-  double opacity = sceneItem.get("opacity", this->Defaults->Opacity).asDouble();
-  std::string fillColor = sceneItem.get("fill", this->Defaults->FillColor).asString();
-  double fillOpacity = sceneItem.get("fillOpacity", this->Defaults->FillOpacity).asDouble();
-  std::string strokeColor = sceneItem.get("stroke", this->Defaults->StrokeColor).asString();
-  double strokeOpacity = sceneItem.get("strokeOpacity", this->Defaults->StrokeOpacity).asDouble();
-  float strokeWidth = sceneItem.get("strokeWidth", this->Defaults->StrokeWidth).asFloat();
-
-  item->SetOpacity(opacity);
-  vtkColor4ub color = this->StringColorMapper->HTMLColorToRGBA(fillColor);
-  item->GetBrush()->SetColor(color);
-  if (color[3] != 0)
-    {
-    item->GetBrush()->SetOpacityF(fillOpacity);
-    }
-  color = this->StringColorMapper->HTMLColorToRGBA(strokeColor);
-  item->GetPen()->SetColor(color);
-  if (color[3] != 0)
-    {
-    item->GetPen()->SetOpacityF(strokeOpacity);
-    }
-  item->GetPen()->SetWidth(strokeWidth);
-
-
+  // Set shape type.
   std::string shape = sceneItem.get("shape", this->Defaults->Shape).asString();
 
   int shapeId = vtkVegaSymbolItem::CIRCLE;
@@ -1168,7 +1118,6 @@ void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
     }
 
   item->SetShape(shapeId);
-
 }
 
 
@@ -1176,15 +1125,13 @@ void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
 void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
                                        vtkVegaTextItem* item)
 {
-  float x = sceneItem.get("x", this->Defaults->X).asFloat();
-  float y = sceneItem.get("y", this->Defaults->Y).asFloat();
+  SetXYProperties(sceneItem, item, this->Defaults);
+
   float dx = sceneItem.get("dx", this->Defaults->TextOffsetX).asFloat();
   float dy = sceneItem.get("dy", this->Defaults->TextOffsetY).asFloat();
   float offsetRadius = sceneItem.get("radius", this->Defaults->TextOffsetRadius).asFloat();
   double offsetAngle = sceneItem.get("theta", this->Defaults->TextOffsetAngle).asDouble();
 
-  item->SetX(x);
-  item->SetY(y);
   item->SetDx(dx);
   item->SetDy(dy);
   item->SetRadius(offsetRadius);
@@ -1201,10 +1148,6 @@ void vtkVegaRenderer::UpdateProperties(const Json::Value& sceneItem,
   double opacity = sceneItem.get("opacity", this->Defaults->Opacity).asDouble();
   std::string fillColor = sceneItem.get("fill", this->Defaults->FillColor).asString();
   double fillOpacity = sceneItem.get("fillOpacity", this->Defaults->FillOpacity).asDouble();
-//  std::string strokeColor = sceneItem.get("stroke", this->Defaults->StrokeColor).asString();
-//  double strokeOpacity = sceneItem.get("strokeOpacity", this->Defaults->StrokeOpacity).asDouble();
-//  float strokeWidth = sceneItem.get("strokeWidth", this->Defaults->StrokeWidth).asFloat();
-
 
   vtkColor4ub color = this->StringColorMapper->HTMLColorToRGBA(fillColor);
   textProp->SetOpacity(opacity * fillOpacity * (color[3] / 255.0));
