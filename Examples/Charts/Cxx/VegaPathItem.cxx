@@ -36,13 +36,22 @@
 
 int main(int argc, char *argv[])
 {
-  vtkSmartPointer<vtkSVGPath> path = vtkSmartPointer<vtkSVGPath>::New();
-  path->AppendCommandsFromString(
-      "M 20,10 l 100,100 h 50 v -50 a 200,100 15 1 1 -50,100 Z"
-      "M 100,100 l 0,100 l100,-100 l 0,100 Z"
-      "M 10,300 q 100,50 150,0 t 200,50"
-      "c 150,50 -230,120 150,200 s -200,80 -330,-300 Z");
+  std::string cmd;
+  if (argc > 1)
+    {
+      cmd = std::string(argv[1]);
+    }
+  else
+    {
+    cmd = std::string(
+        "M 20,10 l 100,100 h 50 v -50 a 200,100 15 1 1 -50,100 Z"
+        "M 100,100 l 0,100 l100,-100 l 0,100 Z"
+        "M 10,300 q 100,50 150,0 t 200,50"
+        "c 150,50 -230,120 150,200 s -200,80 -330,-300 Z");
+    }
 
+  vtkSmartPointer<vtkSVGPath> path = vtkSmartPointer<vtkSVGPath>::New();
+  path->AppendCommandsFromString(cmd);
   std::cout << "path: '" << path->ToString() << "'\n";
 
   vtkSmartPointer<vtkVegaSceneItem> sceneItem =

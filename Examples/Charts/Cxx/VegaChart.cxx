@@ -52,7 +52,7 @@ bool ReadFile(const String& filePath, String& fileContent)
 
 int main(int argc, char *argv[])
 {
-  if (argc < 1)
+  if (argc < 2)
     {
     std::cout << "No scene graph argument" << std::endl;
     return EXIT_FAILURE;
