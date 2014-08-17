@@ -22,6 +22,9 @@ TARGET_LINK_LIBRARIES(GraphItem ${VTK_LIBRARIES})
 ADD_EXECUTABLE(PiecewiseItem PiecewiseItem.cxx)
 TARGET_LINK_LIBRARIES(PiecewiseItem ${VTK_LIBRARIES})
 
+ADD_EXECUTABLE(VegaChart VegaChart.cxx)
+TARGET_LINK_LIBRARIES(VegaChart ${VTK_LIBRARIES})
+
 ADD_EXECUTABLE(VegaPathItem VegaPathItem.cxx)
 TARGET_LINK_LIBRARIES(VegaPathItem ${VTK_LIBRARIES})
 
@@ -50,10 +53,6 @@ IF(NOT("${VTK_QT_VERSION}" STREQUAL ""))
     ADD_EXECUTABLE(SceneString SceneString.cxx)
     QT5_USE_MODULES(SceneString Core Gui Concurrent Qml)
     TARGET_LINK_LIBRARIES(SceneString ${VTK_LIBRARIES})
-
-    ADD_EXECUTABLE(VegaChart VegaChart.cxx)
-    QT5_USE_MODULES(VegaChart Core Gui Concurrent Qml)
-    TARGET_LINK_LIBRARIES(VegaChart ${VTK_LIBRARIES})
 
   ELSE()
       FIND_PACKAGE(Qt4 REQUIRED)

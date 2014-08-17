@@ -25,29 +25,26 @@
 #include "vtkRenderWindowInteractor.h"
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
 
-#include <QFile>
-#include <QTextStream>
-#include <QString>
-
 typedef std::string String;
+
 
 //------------------------------------------------------------------------------
 bool ReadFile(const String& filePath, String& fileContent)
 {
-  QFile scriptFile(QString::fromStdString(filePath));
-  if (!scriptFile.open(QIODevice::ReadOnly))
+  std::ifstream file(filePath.c_str());
+  if(!file)
     {
     return false;
     }
-  QTextStream stream(&scriptFile);
-  QString contents = stream.readAll();
-  scriptFile.close();
-  fileContent = contents.toStdString();
+  std::stringstream ss;
+  ss << file.rdbuf();
+  fileContent = ss.str();
   return true;
 }
-
 
 
 int main(int argc, char *argv[])
@@ -65,15 +62,23 @@ int main(int argc, char *argv[])
       return EXIT_FAILURE;
       }
 
-  vtkSmartPointer<vtkVegaRenderer> renderer = vtkSmartPointer<vtkVegaRenderer>::New();
+  // Set input scene graph.
+  vtkSmartPointer<vtkVegaRenderer> renderer =
+      vtkSmartPointer<vtkVegaRenderer>::New();
   renderer->SetInputSceneString(fileContent);
 
-  std::string scene = renderer->GetInputSceneString();
-
+  //std::string scene = renderer->GetInputSceneString();
   //std::cout << scene << std::endl;
 
-  // Set base url for data retrieving, e.g. images.
-  renderer->SetBaseDataURL("file:///opt/shared/work/source_code/vega/vega/examples");
+  if (argc > 3) // Check for base data URL path
+    {
+    std::string bSwitch(argv[2]);
+    if (bSwitch.compare("-b") == 0)
+      {
+      // Set base url for data retrieving, e.g. images.
+      renderer->SetBaseDataURL(argv[3]);
+      }
+    }
 
   //renderer->DebugOn();
   renderer->Update();
