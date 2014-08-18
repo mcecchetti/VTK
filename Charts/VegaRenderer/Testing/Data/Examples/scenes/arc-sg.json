@@ -1,0 +1,277 @@
+{
+  "marktype": "group",
+  "interactive": false,
+  "items": [
+    {
+      "status": 1,
+      "datum": {
+        "sentinel": 1
+      },
+      "key": 0,
+      "items": [
+        {
+          "marktype": "arc",
+          "interactive": true,
+          "items": [
+            {
+              "status": 1,
+              "datum": {
+                "data": 12,
+                "index": 0,
+                "value": 12,
+                "startAngle": 0,
+                "midAngle": 0.2371013323463995,
+                "endAngle": 0.474202664692799
+              },
+              "key": 0,
+              "x": 200,
+              "y": 200,
+              "startAngle": 0,
+              "endAngle": 0.474202664692799,
+              "innerRadius": 20,
+              "outerRadius": 58.43075691322091,
+              "stroke": "#fff",
+              "fill": "#ccc"
+            },
+            {
+              "status": 1,
+              "datum": {
+                "data": 23,
+                "index": 1,
+                "value": 23,
+                "startAngle": 0.474202664692799,
+                "midAngle": 0.928646885023398,
+                "endAngle": 1.383091105353997
+              },
+              "key": 1,
+              "x": 200,
+              "y": 200,
+              "startAngle": 0.474202664692799,
+              "endAngle": 1.383091105353997,
+              "innerRadius": 20,
+              "outerRadius": 73.2049737408941,
+              "stroke": "#fff",
+              "fill": "#ccc"
+            },
+            {
+              "status": 1,
+              "datum": {
+                "data": 47,
+                "index": 2,
+                "value": 47,
+                "startAngle": 1.383091105353997,
+                "midAngle": 2.311737990377395,
+                "endAngle": 3.240384875400793
+              },
+              "key": 2,
+              "x": 200,
+              "y": 200,
+              "startAngle": 1.383091105353997,
+              "endAngle": 3.240384875400793,
+              "innerRadius": 20,
+              "outerRadius": 96.05665904189708,
+              "stroke": "#fff",
+              "fill": "#ccc"
+            },
+            {
+              "status": 1,
+              "datum": {
+                "data": 6,
+                "index": 3,
+                "value": 6,
+                "startAngle": 3.240384875400793,
+                "midAngle": 3.3589355415739925,
+                "endAngle": 3.477486207747192
+              },
+              "key": 3,
+              "x": 200,
+              "y": 200,
+              "startAngle": 3.240384875400793,
+              "endAngle": 3.477486207747192,
+              "innerRadius": 20,
+              "outerRadius": 47.1746488194703,
+              "stroke": "#fff",
+              "fill": "#ccc"
+            },
+            {
+              "status": 1,
+              "datum": {
+                "data": 52,
+                "index": 4,
+                "value": 52,
+                "startAngle": 3.477486207747192,
+                "midAngle": 4.50492531458159,
+                "endAngle": 5.532364421415988
+              },
+              "key": 4,
+              "x": 200,
+              "y": 200,
+              "startAngle": 3.477486207747192,
+              "endAngle": 5.532364421415988,
+              "innerRadius": 20,
+              "outerRadius": 100,
+              "stroke": "#fff",
+              "fill": "#ccc"
+            },
+            {
+              "status": 1,
+              "datum": {
+                "data": 19,
+                "index": 5,
+                "value": 19,
+                "startAngle": 5.532364421415988,
+                "midAngle": 5.907774864297787,
+                "endAngle": 6.283185307179586
+              },
+              "key": 5,
+              "x": 200,
+              "y": 200,
+              "startAngle": 5.532364421415988,
+              "endAngle": 6.283185307179586,
+              "innerRadius": 20,
+              "outerRadius": 68.35764198615911,
+              "stroke": "#fff",
+              "fill": "#ccc"
+            }
+          ]
+        },
+        {
+          "marktype": "text",
+          "interactive": true,
+          "items": [
+            {
+              "status": 1,
+              "datum": {
+                "data": 12,
+                "index": 0,
+                "value": 12,
+                "startAngle": 0,
+                "midAngle": 0.2371013323463995,
+                "endAngle": 0.474202664692799
+              },
+              "key": 0,
+              "x": 200,
+              "y": 200,
+              "radius": 66.4307569132209,
+              "theta": 0.2371013323463995,
+              "fill": "#000",
+              "align": "center",
+              "baseline": "middle",
+              "text": 12
+            },
+            {
+              "status": 1,
+              "datum": {
+                "data": 23,
+                "index": 1,
+                "value": 23,
+                "startAngle": 0.474202664692799,
+                "midAngle": 0.928646885023398,
+                "endAngle": 1.383091105353997
+              },
+              "key": 1,
+              "x": 200,
+              "y": 200,
+              "radius": 81.2049737408941,
+              "theta": 0.928646885023398,
+              "fill": "#000",
+              "align": "center",
+              "baseline": "middle",
+              "text": 23
+            },
+            {
+              "status": 1,
+              "datum": {
+                "data": 47,
+                "index": 2,
+                "value": 47,
+                "startAngle": 1.383091105353997,
+                "midAngle": 2.311737990377395,
+                "endAngle": 3.240384875400793
+              },
+              "key": 2,
+              "x": 200,
+              "y": 200,
+              "radius": 104.05665904189708,
+              "theta": 2.311737990377395,
+              "fill": "#000",
+              "align": "center",
+              "baseline": "middle",
+              "text": 47
+            },
+            {
+              "status": 1,
+              "datum": {
+                "data": 6,
+                "index": 3,
+                "value": 6,
+                "startAngle": 3.240384875400793,
+                "midAngle": 3.3589355415739925,
+                "endAngle": 3.477486207747192
+              },
+              "key": 3,
+              "x": 200,
+              "y": 200,
+              "radius": 55.1746488194703,
+              "theta": 3.3589355415739925,
+              "fill": "#000",
+              "align": "center",
+              "baseline": "middle",
+              "text": 6
+            },
+            {
+              "status": 1,
+              "datum": {
+                "data": 52,
+                "index": 4,
+                "value": 52,
+                "startAngle": 3.477486207747192,
+                "midAngle": 4.50492531458159,
+                "endAngle": 5.532364421415988
+              },
+              "key": 4,
+              "x": 200,
+              "y": 200,
+              "radius": 108,
+              "theta": 4.50492531458159,
+              "fill": "#000",
+              "align": "center",
+              "baseline": "middle",
+              "text": 52
+            },
+            {
+              "status": 1,
+              "datum": {
+                "data": 19,
+                "index": 5,
+                "value": 19,
+                "startAngle": 5.532364421415988,
+                "midAngle": 5.907774864297787,
+                "endAngle": 6.283185307179586
+              },
+              "key": 5,
+              "x": 200,
+              "y": 200,
+              "radius": 76.35764198615911,
+              "theta": 5.907774864297787,
+              "fill": "#000",
+              "align": "center",
+              "baseline": "middle",
+              "text": 19
+            }
+          ]
+        }
+      ],
+      "width": 400,
+      "height": 400,
+      "axisItems": [],
+      "legendItems": [],
+      "padding": {
+        "bottom": 0,
+        "left": 0,
+        "right": 0,
+        "top": 0
+      }
+    }
+  ]
+}

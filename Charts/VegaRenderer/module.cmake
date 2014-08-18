@@ -17,7 +17,10 @@ vtk_module(vtkChartsVegaRenderer
     vtkIOImage
     vtkCommonExecutionModel
     vtkRendering${VTK_RENDERING_BACKEND}
+    vtkRenderingContext${VTK_RENDERING_BACKEND}
+    vtkViewsContext2D
     vtkTestingCore
     vtkTestingRendering
     vtkInteractionStyle
+    vtkInteractionImage
   )
